@@ -15,18 +15,47 @@ The project is still actively being improved, but the current version already su
 
 ---
 
+## Architecture
+
+## Workflow Architecture
+
+User Issue
+      ↓
+Issue Classification
+      ↓
+Knowledge Base Retrieval
+      ↓
+Follow-Up Questions
+      ↓
+Troubleshooting Guidance
+      ↓
+Ticket Lifecycle Management
+      ↓
+Escalation Decision
+
+---
+
 ## Current Features
 
-* Conversational IT support assistant
-* Context-aware troubleshooting
-* Session memory across conversations
-* Ticket generation system
+* AI-powered IT support assistant
+* Issue classification and triage
+* Knowledge base retrieval for context-aware troubleshooting
+* Multi-step troubleshooting workflows
+* Follow-up questioning and conversation memory
+* Ticket generation and lifecycle management
 * Escalation handling
-* Streamlit-based UI
+* Persistent ticket IDs across support sessions
 * LangGraph workflow orchestration
-* OpenAI integration
-* Persistent ticket IDs
-* Follow-up issue handling
+* Streamlit-based user interface
+* OpenAI-powered troubleshooting recommendations
+* Support domains including:
+  - VPN
+  - Password Reset
+  - Outlook
+  - Microsoft 365
+  - Active Directory
+  - Printer Support
+  - General IT Support
 
 ---
 
@@ -36,8 +65,10 @@ The project is still actively being improved, but the current version already su
 * Streamlit
 * LangGraph
 * OpenAI API
-* JSON-based storage
-* Session state management
+* Knowledge Base Retrieval
+* Session State Management
+* JSON-based Ticket Storage
+* Environment Variable Management (python-dotenv)
 
 ---
 
@@ -164,10 +195,12 @@ Planned upgrades include:
 * SQLite/Supabase integration
 * Admin dashboard
 * Multi-user authentication
-* Knowledge base integration
-* Vector search / RAG support
-* Slack or Microsoft Teams integration
-* Better incident categorization
+* Vector search and semantic retrieval
+* Embedding-based RAG workflows
+* Slack integration
+* Microsoft Teams integration
+* Advanced incident categorization
+* Analytics and reporting dashboard
 * Voice support experiments
 
 ---
