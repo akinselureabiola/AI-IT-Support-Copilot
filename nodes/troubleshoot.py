@@ -1,4 +1,5 @@
 from llm import llm
+from utils.knowledge_loader import load_knowledge
 
 
 def troubleshoot(state):
@@ -7,25 +8,41 @@ def troubleshoot(state):
     issue_type = state["issue_type"]
     conversation_history = state["conversation_history"]
 
+    knowledge_base = state["knowledge_base"]
+
     prompt = f"""
-    You are an expert IT Support Engineer helping a user troubleshoot an ongoing IT issue.
+    You are an experienced IT Support Engineer.
+
+    Knowledge Base:
+    {knowledge_base}
 
     Conversation History:
     {conversation_history}
 
+    Current Issue Type:
+    {issue_type}
+
     Latest User Message:
-    "{user_issue}"
+    {user_issue}
 
-    Current Issue Classification:
-    "{issue_type}"
+    Instructions:
 
-    Your task:
-    1. Understand the FULL troubleshooting context
-    2. Avoid repeating previous troubleshooting already suggested
-    3. Ask ONE intelligent follow-up troubleshooting question
-    4. Provide ONE concise troubleshooting recommendation
+    1. Continue troubleshooting the existing issue.
+    2. Use the knowledge base as your primary source of guidance.
+    3. Use previous conversation context.
+    4. Do NOT repeat previous troubleshooting steps.
+    5. Do NOT classify the issue again.
+    6. Do NOT generate ticket information.
+    7. Do NOT include headings such as:
+    - Issue Classification
+    - Follow-Up Question
+    - Troubleshooting Recommendation
+    8. Provide:
+    - One troubleshooting recommendation
+    - One short explanation
+    9. If the knowledge base contains relevant guidance, prioritize it over general knowledge.
 
-    Keep responses practical, conversational, and professional.
+    Keep the response concise, professional, and practical.
     """
 
     response = llm.invoke(prompt)
