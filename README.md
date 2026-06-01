@@ -1,61 +1,103 @@
 # AI IT Support Copilot
 
-An AI-powered IT support assistant built to simulate real-world helpdesk troubleshooting workflows.
+An AI powered IT support assistant designed to simulate how a real helpdesk interaction unfolds from the first user message through troubleshooting, ticket management, escalation, and ticket resolution.
 
-This project started as an experiment to see how far conversational AI could go beyond simple chatbot responses. Instead of only answering questions, the goal was to create something that behaves more like an actual IT support workflow:
+Working in IT support exposed me to the challenges of troubleshooting, ticket management, and user support. This project was my way of exploring how AI could assist with those workflows while also helping me deepen my understanding of AI engineering and workflow automation.
 
-* understanding user issues
-* remembering conversation context
-* asking follow-up questions
-* suggesting troubleshooting steps
-* escalating when necessary
-* generating support tickets automatically
+Most AI support demos focus on generating answers. Real support environments are more complex. Support engineers need to gather information, ask follow up questions, consult documentation, track incidents, and decide when escalation is necessary.
 
-The project is still actively being improved, but the current version already supports multi-step troubleshooting conversations and context-aware ticket generation.
+The goal of this project was to build something that behaves more like an actual support workflow rather than a simple chatbot.
 
 ---
 
-## Architecture
-
 ## Workflow Architecture
 
+The application follows a structured support process:
+
+```text
 User Issue
-      ↓
+    ↓
 Issue Classification
-      ↓
-Knowledge Base Retrieval
-      ↓
-Follow-Up Questions
-      ↓
+    ↓
+Knowledge Retrieval
+    ↓
+Follow Up Questions
+    ↓
 Troubleshooting Guidance
-      ↓
+    ↓
 Ticket Lifecycle Management
-      ↓
+    ↓
 Escalation Decision
+```
+
+The workflow is orchestrated using LangGraph, allowing each stage to behave as an independent support process.
+
+---
+
+## Issue Classification and Triage
+
+When a user reports an issue, the assistant first identifies the problem category, generates a support ticket, and asks a relevant follow up question.
+
+This example shows a VPN connectivity issue being classified before troubleshooting begins.
+
+![Issue Classification](screenshots/01_issue_classification_and_triage.png)
+
+---
+
+## Knowledge Based Troubleshooting
+
+After receiving additional information, the assistant retrieves relevant troubleshooting guidance from the knowledge base and continues the investigation.
+
+The current knowledge base contains support guidance for:
+
+* VPN Issues
+* Password Resets
+* Microsoft 365
+* Outlook
+* Active Directory
+* Printer Support
+* General IT Support
+
+Example using VPN Error 809:
+
+![Knowledge Based Troubleshooting](screenshots/02_error_809_troubleshooting.png)
+
+---
+
+## Ticket Lifecycle Management
+
+The assistant maintains conversation context throughout the support session.
+
+As troubleshooting progresses, ticket status automatically changes from Open to In Progress and later to Awaiting Confirmation when the user reports that the issue appears to be fixed.
+
+![Resolution Detection](screenshots/03_resolution_confirmation_stage.png)
+
+---
+
+## Ticket Resolution
+
+Once the user confirms the issue has been resolved, the ticket is automatically updated and marked as Resolved.
+
+This creates a more realistic support workflow where incidents move through a lifecycle rather than ending after a single response.
+
+![Ticket Resolved](screenshots/04_ticket_resolved.png)
 
 ---
 
 ## Current Features
 
-* AI-powered IT support assistant
 * Issue classification and triage
-* Knowledge base retrieval for context-aware troubleshooting
-* Multi-step troubleshooting workflows
-* Follow-up questioning and conversation memory
-* Ticket generation and lifecycle management
+* Context aware follow up questions
+* Knowledge base retrieval
+* Multi step troubleshooting workflows
+* Conversation memory
+* Ticket generation
+* Ticket lifecycle tracking
 * Escalation handling
-* Persistent ticket IDs across support sessions
+* Persistent ticket IDs
 * LangGraph workflow orchestration
-* Streamlit-based user interface
-* OpenAI-powered troubleshooting recommendations
-* Support domains including:
-  - VPN
-  - Password Reset
-  - Outlook
-  - Microsoft 365
-  - Active Directory
-  - Printer Support
-  - General IT Support
+* Streamlit user interface
+* OpenAI powered troubleshooting guidance
 
 ---
 
@@ -64,56 +106,28 @@ Escalation Decision
 * Python
 * Streamlit
 * LangGraph
-* OpenAI API
-* Knowledge Base Retrieval
+* OpenAI
 * Session State Management
-* JSON-based Ticket Storage
-* Environment Variable Management (python-dotenv)
+* Knowledge Base Retrieval
+* Python Dotenv
 
 ---
 
-## Example Use Cases
+## What I Learned Building This
 
-The assistant can currently help simulate support flows for issues like:
+The AI responses were actually the easiest part.
 
-* Password reset requests
-* VPN connection problems
-* Microsoft 365 access issues
-* Slow system performance
-* Printer/network troubleshooting
-* Account lockouts
-* General IT support triage
+Most of the work went into solving problems that are easy to overlook when watching AI demos:
 
----
+* Managing state across conversations
+* Preserving context between messages
+* Preventing issue reclassification during follow up messages
+* Handling ticket lifecycle updates
+* Designing reliable workflows
+* Connecting knowledge retrieval with troubleshooting recommendations
+* Handling incomplete user input
 
-## Why I Built This
-
-Most AI support demos online stop at:
-
-> "Ask a question → get an answer."
-
-Real IT support is rarely that simple.
-
-In actual environments, support engineers need to:
-
-* gather context
-* track ongoing conversations
-* classify issues correctly
-* escalate when required
-* maintain ticket history
-* handle incomplete user information
-
-I wanted to build something closer to that experience.
-
-This project has honestly taught me more about:
-
-* workflow orchestration
-* state management
-* debugging
-* prompt structure
-* UI reliability
-* conversation memory
-  than prompting alone ever could.
+Building these pieces taught me far more about application design than prompt engineering alone.
 
 ---
 
@@ -121,15 +135,17 @@ This project has honestly taught me more about:
 
 ```bash
 AI-IT-Support-Copilot/
-│
-├── app.py
-├── system_prompts.py
-├── ticket_manager.py
-├── memory/
-├── data/
+
+├── streamlit_app.py
+├── workflow.py
+├── state.py
+├── ticketing.py
+├── llm.py
+├── knowledge_base/
+├── nodes/
+├── screenshots/
 ├── requirements.txt
-├── README.md
-└── screenshots/
+└── README.md
 ```
 
 ---
@@ -142,7 +158,7 @@ Clone the repository:
 git clone https://github.com/yourusername/AI-IT-Support-Copilot.git
 ```
 
-Move into the project folder:
+Move into the project directory:
 
 ```bash
 cd AI-IT-Support-Copilot
@@ -154,67 +170,61 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Create a `.env` file and add your OpenAI API key:
+Create a `.env` file:
 
 ```env
 OPENAI_API_KEY=your_api_key_here
 ```
 
-Run the app:
+Run the application:
 
 ```bash
-streamlit run app.py
+streamlit run streamlit_app.py
 ```
 
 ---
 
-## Current Challenges / Work In Progress
+## Current Development Focus
 
-A few things I’m currently improving:
+The project is still actively evolving.
 
-* Better issue classification across long conversations
-* Smarter escalation logic
-* More reliable memory handling
-* Improved ticket persistence
-* Authentication system
+Current areas of focus include:
+
+* Improved knowledge retrieval
+* More advanced RAG implementation
+* Better escalation logic
+* Persistent ticket storage
+* Authentication
 * Database integration
-* Analytics/dashboard support
-
----
-
-## Screenshots
-
-Project screenshots and workflow previews can be found inside the `screenshots/` folder.
+* Analytics and reporting
 
 ---
 
 ## Future Improvements
 
-Planned upgrades include:
-
-* SQLite/Supabase integration
-* Admin dashboard
-* Multi-user authentication
-* Vector search and semantic retrieval
-* Embedding-based RAG workflows
-* Slack integration
+* Vector based retrieval
+* Embedding powered search
+* SQLite integration
+* Supabase integration
 * Microsoft Teams integration
-* Advanced incident categorization
-* Analytics and reporting dashboard
-* Voice support experiments
+* Slack integration
+* Multi user support
+* Admin dashboard
+* Analytics and reporting
+* Voice enabled support workflows
 
 ---
 
 ## Disclaimer
 
-This project is for learning, experimentation, and portfolio purposes.
+This project was built for learning, experimentation, and portfolio development.
 
-It is not intended to replace enterprise ITSM platforms or production-grade support systems.
+It is not intended to replace enterprise ITSM platforms such as ServiceNow or Jira Service Management.
 
 ---
 
 ## Feedback
 
-Still actively building and refining the project.
+The project is still evolving as I continue learning more about AI workflows, automation, and IT operations.
 
-If you have ideas, suggestions, or feedback, feel free to open an issue or connect with me on LinkedIn.
+Suggestions, ideas, and feedback are always welcome.
