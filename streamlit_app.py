@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 load_dotenv()
-
+from nodes.root_cause import generate_root_cause
 import streamlit as st
 
 from workflow import app
@@ -10,6 +10,9 @@ from ticketing import (
     update_ticket_status
 )
 
+from nodes.root_cause import (
+    generate_root_cause
+)
 
 st.set_page_config(
     page_title="AI IT Support Copilot",
@@ -168,6 +171,23 @@ if user_issue:
 
         if ticket["status"] == "Resolved":
 
+            root_cause = generate_root_cause(
+    {
+        **initial_state,
+        "issue_type": result["issue_type"]
+    }
+)
+            result["root_cause_summary"] = (
+                root_cause[
+                    "root_cause_summary"
+                ]
+            )
+
+            print("\nROOT CAUSE GENERATED:")
+            print(root_cause)
+            print("\nROOT CAUSE SUMMARY:")
+            print(result["root_cause_summary"])
+
             result["resolution"] = (
                 f"Thank you for confirming. "
                 f"Ticket {ticket['ticket_id']} "
@@ -206,6 +226,12 @@ if user_issue:
 
 ### Troubleshooting Response
 {result['resolution']}
+
+### Root Cause Analysis
+{result.get(
+    "root_cause_summary",
+    "Pending resolution"
+)}
 
 ### Escalation Status
 {"Escalated to IT Support Team" if result["escalation_needed"] else "No escalation required"}

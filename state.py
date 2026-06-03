@@ -10,4 +10,5 @@ class ITSupportState(TypedDict):
     follow_up_question: str
     troubleshooting_steps: List[str]
     resolution: str
+    root_cause_summary: str
     escalation_needed: bool
